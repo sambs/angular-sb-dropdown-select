@@ -30,6 +30,11 @@ An example using the Google Maps geocoding service:
       });
 
 
+Browser support
+---------------
+
+Tests pass in IE8 if es5-shim is used.
+
 License
 -------
 

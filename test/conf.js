@@ -11,12 +11,17 @@ module.exports = function(config) {
       testName: 'Angular Dropdown Select'
     },
 
-    // define SL browsers
+    // define SauceLabs browsers
     customLaunchers: {
-      SLIE10: {
+      IE10: {
         base: 'SauceLabs',
         browserName: 'internet explorer',
         version: 10
+      },
+      IE8: {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        version: 8
       }
     },
 
@@ -28,6 +33,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      // IE shims
+      'bower_components/es5-shim/es5-shim.js',
+
       // Dependencies
       'bower_components/jquery/jquery.js',
       'bower_components/angular/angular.js',
