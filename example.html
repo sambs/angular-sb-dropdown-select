@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <title>Dropdown Select Demo</title>
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script src="bower_components/jquery/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-sb-debounce/src/debounce.js"></script>
+  <script src="bower_components/angular-sb-popover/src/popover.js"></script>
+  <script src="bower_components/angular-sb-highlight-group/src/highlight-group.js"></script>
+  <script src="src/dropdown-select.js"></script>
+  <script>
+    angular.module('app', ['sbDropdownSelect'])
+
+      .controller('Controller', function ($scope, $q) {
+        $scope.obj = {
+          location_a:{
+            "display": "Plymouth, UK",
+            "value": [ "-4.143", "50.375" ]
+          } 
+        };
+
+        $scope.fetchLocationObjs = function (query) {
+          var deferred = $q.defer();
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: query }, function (results, status) {
+            deferred.resolve(results.map(resultToObj));
+          });
+          return deferred.promise;
+        };
+
+        function resultToObj (result) {
+          var pt = result.geometry.location;
+          return {
+            display: result.formatted_address,
+            value: [pt.lng().toFixed(3), pt.lat().toFixed(3)]
+          };
+        }
+
+        $scope.fetchLocationStrs = function (query) {
+          var deferred = $q.defer();
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: query }, function (results, status) {
+            deferred.resolve(results.map(resultToStr));
+          });
+          return deferred.promise;
+        };
+
+        function resultToStr (result) {
+          return result.formatted_address;
+        }
+      });
+  </script>
+  <style>
+    body, input {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .dropdown-select {
+      position: relative;
+      width: 200px;
+    }
+    .dropdown-select-waiting:after {
+      content: '...';
+      position: absolute;
+      right: 0;
+      top: 3px;
+      text-align: right;
+    }
+    .dropdown-select-clear {
+      position: absolute;
+      right: 5px;
+      top: 4px;
+    }
+    .dropdown-select-input {
+      width: 175px;
+      padding: 3px 20px 3px 5px;
+      margin: 0;
+      border: 1px solid #ccc;
+    }
+    .dropdown-select-complete .dropdown-select-input {
+      background-color: #eee;
+     }
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-top-width: 0;
+    }
+    .dropdown-item {
+      padding: 2px 5px;
+      display: block;
+    }
+    .dropdown-highlighted {
+      background-color: red;
+      color: white;
+    }
+    .dropdown ul, 
+    .dropdown li {
+      padding: 0;
+      margin: 0;
+    }
+    .placeholder {
+      color: #aaa;
+    }
+  </style>
+
+</head>
+<body>
+  <div ng-controller="Controller">
+    <form name="form">
+      <label>
+        Location A
+        <div sb-dropdown-select sb-source="fetchLocationObjs" sb-display-property="display" name="location_a" ng-model="obj.location_a"></div>
+      </label>
+      <pre>{{form.location_a.$error|json}}</pre>
+      <br>
+      <label>
+        Location B (required)
+        <div sb-dropdown-select sb-source="fetchLocationStrs" name="location_b" ng-model="obj.location_b" ng-required></div>
+      </label>
+      <pre>{{form.location_b.$error|json}}</pre>
+      <br>
+    </form>
+    <br>
+    <pre>obj={{obj|json}}</pre>
+  </div>
+</body>
+</html>

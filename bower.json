@@ -1,0 +1,15 @@
+{
+  "name": "angular-sb-dropdown-select",
+  "version": "0.0.1",
+  "main": "src/dropdown-select.js",
+  "dependencies": {
+    "jquery": "~1.9.1",
+    "angular": "~1.2.0",
+    "angular-sb-debounce": "~0.2.0",
+    "angular-sb-popover": "0.1.0",
+    "angular-sb-highlight-group": "0.2.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.0"
+  }
+}
