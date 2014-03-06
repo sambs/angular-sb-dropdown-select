@@ -27,31 +27,35 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
       template: template,
       replace: true,
       require: 'ngModel',
-      scope: true,
+      scope: {
+        source: '&sbSource',
+        placeholder: '@placeholder',
+        formatDisplay: '&sbFormatDisplay',
+        displayProperty: '@sbDisplayProperty'
+      },
       priority: 1, // avoid conflicts when used on input element
 
       link: function (scope, elem, attrs, ctrl) {
 
-        if ('sbDisplayProperty' in attrs) {
-          scope.formatDisplay = function (result) {
-            return result[attrs.sbDisplayProperty];
-          };
-        } else if ('sbFormatDisplay' in attrs) {
-          scope.formatDisplay = attrs.sbFormatDisplay;
-        } else {
-          scope.formatDisplay = function (result) {
-            return result;
-          };
-        }
-
-        scope.source = scope.$eval(attrs.sbSource);
-        scope.placeholder = attrs.placeholder;
+        scope.formatDisplay = scope.formatDisplay();
+        scope.source = scope.source();
         scope.complete = false;
         scope.waiting = false;
         scope.show = false;
         scope.query = '';
         scope.results = [];
 
+        if (!scope.formatDisplay) {
+          if (scope.displayProperty) {
+            scope.formatDisplay = function (item) {
+              return item[scope.displayProperty];
+            };
+          } else {
+            scope.formatDisplay = function (item) {
+              return item;
+            };
+          }
+        }
         // Open on focus
         scope.onFocus = function () {
           if (scope.results && scope.results.length) scope.show = true;
