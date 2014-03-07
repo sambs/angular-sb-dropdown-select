@@ -1,6 +1,6 @@
 
 describe('sbDropdownSelect directive', function () {
-  var $q, $timeout, init, scope, dscope, elem, form, input, clear, dropdown;
+  var $q, $timeout, init, scope, elem, form, input, clear, dropdown;
 
   beforeEach(module('sbDropdownSelect'));
 
@@ -21,9 +21,14 @@ describe('sbDropdownSelect directive', function () {
       input = elem.find('input');
       clear = elem.find('.dropdown-select-clear');
       dropdown = elem.find('.dropdown');
-      dscope = input.scope();
+      elem.appendTo(document.body);
+      $timeout.flush();
     };
   }));
+
+  afterEach(function() {
+    elem.remove();
+  });
 
   function stringSource (query) {
     switch (query) {
@@ -54,7 +59,7 @@ describe('sbDropdownSelect directive', function () {
     }
   }
 
-  describe('basic operation', function () {
+  describe('basic', function () {
 
     beforeEach(function () {
       init({
@@ -73,7 +78,7 @@ describe('sbDropdownSelect directive', function () {
     });
 
     it('should show choices', function() {
-      input.val('a').trigger('change');
+      input.val('a').trigger('change').trigger('focus');
       scope.$digest();
       $timeout.flush();
       expect(dropdown).not.toHaveClass('ng-hide');
@@ -86,7 +91,7 @@ describe('sbDropdownSelect directive', function () {
     });
 
     it('should allow selection of choice', function() {
-      input.val('a').trigger('change');
+      input.val('a').trigger('change').trigger('focus');
       scope.$digest();
       $timeout.flush();
       dropdown.find('a').first().click();
@@ -182,6 +187,29 @@ describe('sbDropdownSelect directive', function () {
       expect(dropdown).toHaveClass('ng-hide');
       expect(scope.form.x.$pristine).toBe(true);
       expect(scope.form.x.$error).toEqual({ incomplete: false });
+    });
+  });
+
+  describe('with a default choice', function () {
+
+    beforeEach(function () {
+      init({
+        template: '<div sb-dropdown-select sb-source="source" name="x" ng-model="obj.x"></div>',
+        scope: { 
+          obj: { x: 'something' },
+          source: function (query) {
+            return ['default']; 
+          }
+        }
+      });
+    });
+
+    it('should show when no query', function() {
+      expect(dropdown).toHaveClass('ng-hide');
+      input.val('').trigger('change').trigger('focus');
+      scope.$digest();
+      expect(dropdown).not.toHaveClass('ng-hide');
+      expect(dropdown.find('li').first().text()).toBe('default');
     });
   });
 });

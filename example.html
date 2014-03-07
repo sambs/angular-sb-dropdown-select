@@ -3,56 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>Dropdown Select Demo</title>
-  <!--[if lt IE 9]><script src="bower_components/es5-shim/es5-shim.js"></script><![endif]-->
-  <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-  <script src="bower_components/jquery/jquery.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-sb-debounce/src/debounce.js"></script>
-  <script src="bower_components/angular-sb-popover/src/popover.js"></script>
-  <script src="bower_components/angular-sb-highlight-group/src/highlight-group.js"></script>
-  <script src="src/dropdown-select.js"></script>
-  <script>
-    angular.module('app', ['sbDropdownSelect'])
-
-      .controller('Controller', function ($scope, $q) {
-        $scope.obj = {
-          location_a:{
-            "display": "Plymouth, UK",
-            "value": [ "-4.143", "50.375" ]
-          } 
-        };
-
-        $scope.fetchLocationObjs = function (query) {
-          var deferred = $q.defer();
-          var geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ address: query }, function (results, status) {
-            deferred.resolve(results.map(resultToObj));
-          });
-          return deferred.promise;
-        };
-
-        function resultToObj (result) {
-          var pt = result.geometry.location;
-          return {
-            display: result.formatted_address,
-            value: [pt.lng().toFixed(3), pt.lat().toFixed(3)]
-          };
-        }
-
-        $scope.fetchLocationStrs = function (query) {
-          var deferred = $q.defer();
-          var geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ address: query }, function (results, status) {
-            deferred.resolve(results.map(resultToStr));
-          });
-          return deferred.promise;
-        };
-
-        function resultToStr (result) {
-          return result.formatted_address;
-        }
-      });
-  </script>
   <style>
     body, input {
       font-family: Arial, sans-serif;
@@ -124,7 +74,7 @@
       <br>
       <label>
         Location B (required)
-        <div sb-dropdown-select sb-source="fetchLocationStrs" name="location_b" ng-model="obj.location_b" ng-required></div>
+        <div sb-dropdown-select sb-source="fetchLocationStrs" name="location_b" ng-model="obj.location_b" required></div>
       </label>
       <pre>{{form.location_b.$error|json}}</pre>
       <br>
@@ -132,5 +82,58 @@
     <br>
     <pre>obj={{obj|json}}</pre>
   </div>
+  <!--[if lt IE 9]><script src="bower_components/es5-shim/es5-shim.js"></script><![endif]-->
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script src="bower_components/jquery/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-sb-debounce/src/debounce.js"></script>
+  <script src="bower_components/angular-sb-popover/src/popover.js"></script>
+  <script src="bower_components/angular-sb-highlight-group/src/highlight-group.js"></script>
+  <script src="src/dropdown-select.js"></script>
+  <script>
+    angular.module('app', ['sbDropdownSelect'])
+
+      .controller('Controller', function ($scope, $q) {
+        $scope.obj = {
+          location_a:{
+            "display": "Plymouth, UK",
+            "value": [ "-4.143", "50.375" ]
+          } 
+        };
+
+        var geocoder = new google.maps.Geocoder();
+
+        $scope.fetchLocationObjs = function (query) {
+          if (!query) return [];
+          var deferred = $q.defer();
+          geocoder.geocode({ address: query }, function (results, status) {
+            deferred.resolve(results.map(resultToObj));
+          });
+          return deferred.promise;
+        };
+
+        function resultToObj (result) {
+          var pt = result.geometry.location;
+          return {
+            display: result.formatted_address,
+            value: [pt.lng().toFixed(3), pt.lat().toFixed(3)]
+          };
+        }
+
+        $scope.fetchLocationStrs = function (query) {
+          if (!query) return ['Default location'];
+          var deferred = $q.defer();
+          geocoder.geocode({ address: query }, function (results, status) {
+            console.log(results, status);
+            deferred.resolve(results.map(resultToStr));
+          });
+          return deferred.promise;
+        };
+
+        function resultToStr (result) {
+          return result.formatted_address;
+        }
+      });
+  </script>
 </body>
 </html>

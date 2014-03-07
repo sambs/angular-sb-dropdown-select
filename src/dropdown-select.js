@@ -20,8 +20,6 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
       '</div>'
     ].join('');
 
-    var cache = {};
-
     return {
       restrict: 'EA',
       template: template,
@@ -36,6 +34,7 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
       priority: 1, // avoid conflicts when used on input element
 
       link: function (scope, elem, attrs, ctrl) {
+        var cache = {}, input = elem.find('input');
 
         scope.formatDisplay = scope.formatDisplay();
         scope.source = scope.source();
@@ -56,6 +55,7 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
             };
           }
         }
+
         // Open on focus
         scope.onFocus = function () {
           if (scope.results && scope.results.length) scope.show = true;
@@ -76,14 +76,23 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
         };
 
         scope.$watch('query', function (val, prev) {
-          if (val == prev) return;
+          if (val === prev) {
+            // Fetch default results
+            scope.search('');
+            return;
+          }
 
           if (!val) {
-            scope.show = false;
             scope.waiting = false;
             scope.complete = false;
             ctrl.$setValidity('incomplete', true);
             ctrl.$setViewValue(null);
+            if ('$defaultResults' in cache && cache.$defaultResults.length) {
+              scope.results = cache.$defaultResults;
+              scope.show = true;
+            } else {
+              scope.show = false;
+            }
             return;
           }
 
@@ -99,6 +108,7 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
           if (val in cache) {
             scope.results = cache[val];
             scope.waiting = false;
+            scope.show = true;
           } else { 
             scope.search(val);
             scope.waiting = true;
@@ -107,10 +117,11 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
           
         scope.search = debounce(function (query) {
           $q.when(scope.source(query)).then(function (results) {
-            cache[query] = results;
+            cache[query || '$defaultResults'] = results;
             if (scope.query != query) return;
             scope.results = results;
             scope.waiting = false;
+            if (document.activeElement !== input[0]) return;
             scope.show = true;
           }, function (err) {
             console.log(err);
