@@ -1,6 +1,6 @@
 {
   "name": "angular-sb-dropdown-select",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Input selection from a dropdown list",
   "main": "src/dropdown-select.js",
   "devDependencies": {
