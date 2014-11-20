@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8">
   <title>Dropdown Select Demo</title>
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
   <style>
-    body, input {
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      line-height: 20px;
+    body {
+      padding: 20px;
     }
     .dropdown-select {
       position: relative;
@@ -68,7 +67,7 @@
     <form name="form">
       <label>
         Location A
-        <div sb-dropdown-select sb-source="fetchLocationObjs" sb-display-property="display" name="location_a" ng-model="obj.location_a"></div>
+        <div sb-dropdown-select sb-input-class="form-control" sb-source="fetchLocationObjs" sb-display-property="display" name="location_a" ng-model="obj.location_a"></div>
       </label>
       <pre>{{form.location_a.$error|json}}</pre>
       <br>

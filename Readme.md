@@ -14,10 +14,11 @@ Example js using Google Map's geocoding service:
     angular.module('app', ['sbDropdownSelect'])
 
       .controller('Controller', function ($scope, $q) {
+        var geocoder = new google.maps.Geocoder();
 
         $scope.fetchLocations = function (query) {
+          if (query) return [];
           var deferred = $q.defer();
-          var geocoder = new google.maps.Geocoder();
           geocoder.geocode({ address: query }, function (results, status) {
             deferred.resolve(results.map(formatResult));
           });
@@ -50,7 +51,7 @@ Example js using Google Map's geocoding service:
 
 ### Browser support
 
-Tests pass in IE8 if es5-shim is used.
+Use es5-shim where necessary.
 
 License
 -------
