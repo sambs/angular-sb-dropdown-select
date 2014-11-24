@@ -1,6 +1,6 @@
 {
   "name": "angular-sb-dropdown-select",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "src/dropdown-select.js",
   "dependencies": {
     "jquery": "~1.9.1",
