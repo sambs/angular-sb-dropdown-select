@@ -5,8 +5,7 @@ angular.module('sbDropdownSelect', ['sbHighlightGroup', 'sbDebounce', 'sbPopover
   .directive('sbDropdownSelect', ['$q', '$timeout', 'sbDebounce', function ($q, $timeout, debounce) {
     var template = [
       '<div class="dropdown-select" ng-class="{\'dropdown-select-waiting\': waiting, \'dropdown-select-complete\': complete}">',
-        '<input class="dropdown-select-input" ng-class="inputClass" type="text" ng-model="query" placeholder="{{placeholder}}" ',
-          'ng-focus="onFocus()" ng-click="onClick()" ng-keydown="onKeydown($event)">',
+        '<input class="dropdown-select-input" ng-class="inputClass" type="text" ng-model="query" placeholder="{{placeholder}}" ng-focus="onFocus()" ng-click="onClick()" ng-keydown="onKeydown($event)" autocomplete="off">',
         '<a class="dropdown-select-clear" ng-show="query" ng-click="clear($event)">&times;</a>',
         '<div class="dropdown-select-dropdown dropdown" sb-popover-show="show">',
           '<div class="dropdown-select-no-results dropdown-select-item dropdown-item" ng-hide="results">No results</div>',
