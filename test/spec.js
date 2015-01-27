@@ -82,10 +82,11 @@ describe('sbDropdownSelect directive', function () {
       scope.$digest();
       $timeout.flush();
       expect(dropdown).not.toHaveClass('ng-hide');
-      expect(clear).not.toHaveClass('ng-hide');
       expect(dropdown.find('li').length).toBe(3);
       expect(dropdown.find('li').eq(0).text()).toBe('animals');
       expect(dropdown.find('.dropdown-select-no-results')).toHaveClass('ng-hide');
+      expect(input.attr('disabled')).toBeUndefined();
+      expect(clear).toHaveClass('ng-hide');
       expect(scope.form.x.$pristine).toBe(true);
       expect(scope.form.x.$error).toEqual({ incomplete: true });
     });
@@ -98,6 +99,7 @@ describe('sbDropdownSelect directive', function () {
       scope.$digest();
       expect(elem).toHaveClass('dropdown-select-complete');
       expect(input.val()).toBe('animals');
+      expect(input.attr('disabled')).toBe('disabled');
       expect(clear).not.toHaveClass('ng-hide');
       expect(scope.obj.x).toEqual('animals');
       expect(scope.form.x.$pristine).toBe(false);
